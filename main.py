@@ -10,7 +10,10 @@ icon = pygame.image.load('icon.png')
 win = pygame.display.set_mode((700, 500))
 pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
-font = pygame.font.Font("pong-score.ttf", 40)
+font = pygame.font.Font("font.ttf", 40)
+paddle_sound = pygame.mixer.Sound("Pong_paddle_sound.mp3")
+wall_sound = pygame.mixer.Sound("Pong_wall_sound.mp3")
+score_sound = pygame.mixer.Sound("Pong_score_sound.mp3")
 
 vx, vy = -5, random.randint(-5, 5)
 
@@ -54,28 +57,34 @@ while True:
     ball.y += vy
 
     if ball.y < 0:
+        wall_sound.play()
         ball.y = 5
         vy *= -1
     elif ball.y > 495:
+        wall_sound.play()
         ball.y = 495
         vy *= -1
 
     if ball.x <= -10:
+        score_sound.play()
         pad1score += 1
         ball.x, ball.y = 350, 250
         vx, vy = vx * -1, random.randint(-5, 5)
         time.sleep(1)
     elif ball.x >= 710:
+        score_sound.play()
         pad2score += 1
         ball.x, ball.y = 350, 250
         vx, vy = vx * -1, random.randint(-5, 5)
         time.sleep(1)
 
     if ball.colliderect(pad1):
+        paddle_sound.play()
         vy = hitFactor(ball.y, pad1.y, pad1.h)
         vx *= -1
         ballx = 45 + 10
     elif ball.colliderect(pad2):
+        paddle_sound.play()
         vy = hitFactor(ball.y, pad2.y, pad2.h)
         vx *= -1
         ballx = 656 - 10
