@@ -1,13 +1,14 @@
 import pygame
-import math
-import time
-import random
+from math import sin
+from time import sleep
+from random import randint
 from sys import exit
 
 
 pygame.init()
 icon = pygame.image.load('icon.png')
 win = pygame.display.set_mode((700, 500))
+pygame.display.set_caption("Pong")
 pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
 font = pygame.font.Font("font.ttf", 40)
@@ -15,7 +16,7 @@ paddle_sound = pygame.mixer.Sound("Pong_paddle_sound.mp3")
 wall_sound = pygame.mixer.Sound("Pong_wall_sound.mp3")
 score_sound = pygame.mixer.Sound("Pong_score_sound.mp3")
 
-vx, vy = -5, random.randint(-5, 5)
+vx, vy = -5, randint(-5, 5)
 
 pad1score = pad2score = 0
 
@@ -28,7 +29,7 @@ def hitFactor(by, py, ph):
     relativeIntersectY = (py + (ph / 2)) - by
     normalizedRelativeIntersectionY = (relativeIntersectY / (ph / 2))
     bounceAngle = normalizedRelativeIntersectionY
-    return 5 * -math.sin(bounceAngle)
+    return 5 * -sin(bounceAngle)
 
 
 def renderFont(score1, score2):
@@ -69,14 +70,14 @@ while True:
         score_sound.play()
         pad1score += 1
         ball.x, ball.y = 350, 250
-        vx, vy = vx * -1, random.randint(-5, 5)
-        time.sleep(1)
+        vx, vy = vx * -1, randint(-5, 5)
+        sleep(1)
     elif ball.x >= 710:
         score_sound.play()
         pad2score += 1
         ball.x, ball.y = 350, 250
-        vx, vy = vx * -1, random.randint(-5, 5)
-        time.sleep(1)
+        vx, vy = vx * -1, randint(-5, 5)
+        sleep(1)
 
     if ball.colliderect(pad1):
         paddle_sound.play()
