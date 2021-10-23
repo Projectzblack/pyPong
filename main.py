@@ -1,4 +1,5 @@
 import pygame
+import os
 from math import sin
 from time import sleep
 from random import randint
@@ -6,15 +7,15 @@ from sys import exit
 
 
 pygame.init()
-icon = pygame.image.load('icon.png')
+icon = pygame.image.load(os.path.join("Assets", "icon.png"))
 win = pygame.display.set_mode((700, 500))
 pygame.display.set_caption("Pong")
 pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
-font = pygame.font.Font("font.ttf", 40)
-paddle_sound = pygame.mixer.Sound("Pong_paddle_sound.mp3")
-wall_sound = pygame.mixer.Sound("Pong_wall_sound.mp3")
-score_sound = pygame.mixer.Sound("Pong_score_sound.mp3")
+font = pygame.font.Font(os.path.join("Assets", "font.ttf"), 40)
+paddle_sound = pygame.mixer.Sound(os.path.join("Assets", "Pong_paddle_sound.mp3"))
+wall_sound = pygame.mixer.Sound(os.path.join("Assets", "Pong_wall_sound.mp3"))
+score_sound = pygame.mixer.Sound(os.path.join("Assets", "Pong_score_sound.mp3"))
 
 vx, vy = -5, randint(-5, 5)
 
@@ -27,8 +28,7 @@ pad2 = pygame.Rect(656, 200, 20, 100)
 
 def hitFactor(by, py, ph):
     relativeIntersectY = (py + (ph / 2)) - by
-    normalizedRelativeIntersectionY = (relativeIntersectY / (ph / 2))
-    bounceAngle = normalizedRelativeIntersectionY
+    bounceAngle = (relativeIntersectY / (ph / 2))
     return 5 * -sin(bounceAngle)
 
 
@@ -46,13 +46,6 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-    win.fill((0, 0, 0))
-    for i in range(26):
-        pygame.draw.rect(win, (255, 255, 255), (347, 21.1 * (i - 1), 6, 14))
-    pygame.draw.rect(win, (255, 255, 255), (ball.x, ball.y, ball.w, ball.h))
-    pygame.draw.rect(win, (255, 255, 255), (pad1.x, pad1.y, pad1.w, pad1.h))
-    pygame.draw.rect(win, (255, 255, 255), (pad2.x, pad2.y, pad2.w, pad2.h))
-    renderFont(str(pad1score), str(pad2score))
 
     ball.x += vx
     ball.y += vy
@@ -68,13 +61,13 @@ while True:
 
     if ball.x <= -10:
         score_sound.play()
-        pad1score += 1
+        pad2score += 1
         ball.x, ball.y = 350, 250
         vx, vy = vx * -1, randint(-5, 5)
         sleep(1)
     elif ball.x >= 710:
         score_sound.play()
-        pad2score += 1
+        pad1score += 1
         ball.x, ball.y = 350, 250
         vx, vy = vx * -1, randint(-5, 5)
         sleep(1)
@@ -83,12 +76,10 @@ while True:
         paddle_sound.play()
         vy = hitFactor(ball.y, pad1.y, pad1.h)
         vx *= -1
-        ballx = 45 + 10
     elif ball.colliderect(pad2):
         paddle_sound.play()
         vy = hitFactor(ball.y, pad2.y, pad2.h)
         vx *= -1
-        ballx = 656 - 10
 
     if pygame.key.get_pressed()[pygame.K_w]:
         pad1.y -= 5
@@ -107,6 +98,14 @@ while True:
         pad2.y = 400
     elif pad2.y <= 0:
         pad2.y = 0
+
+    win.fill((0, 0, 0))
+    for i in range(26):
+        pygame.draw.rect(win, (255, 255, 255), (347, 21.1 * (i - 1), 6, 14))
+    pygame.draw.rect(win, (255, 255, 255), (ball.x, ball.y, ball.w, ball.h))
+    pygame.draw.rect(win, (255, 255, 255), (pad1.x, pad1.y, pad1.w, pad1.h))
+    pygame.draw.rect(win, (255, 255, 255), (pad2.x, pad2.y, pad2.w, pad2.h))
+    renderFont(str(pad1score), str(pad2score))
 
     pygame.display.update()
     clock.tick(60)
